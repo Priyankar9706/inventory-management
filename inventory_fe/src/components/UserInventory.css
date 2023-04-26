@@ -1,0 +1,21 @@
+.greetingText{
+    float: right;
+    margin-top:-0.5%;
+    margin-right: 45%;
+}
+.addItems{
+    float: left;
+    /* //margin-top:-1%; */
+    margin-left: 40px;
+}
+.dropdownFieldset{
+    display: flex;
+}
+.inputCategory{
+    margin-left: 20px;
+}
+
+.filterCategory{
+    float: right;
+    margin-right: 3%;
+}

@@ -1,0 +1,10 @@
+.errorMessage{
+    color: red;
+}
+label,input,button{
+    margin: 10px;
+    padding: 5px;
+}
+h2{
+    color: blue;
+}

@@ -1,0 +1,43 @@
+.itemSelector{
+    display: flex;
+    justify-content: space-around;
+    border: 2px solid black;
+    /* background-color: lightgrey; */
+    padding: 10px;
+    margin: 5px;
+    align-items: center;
+
+}
+.priceBox{
+    border: 1px solid black;
+}
+.styleInputBox{
+    margin-bottom: auto;
+    float: left;
+}
+icon-shape {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.icon-sm {
+    width: 2rem;
+    height: 2rem;
+    
+}
+.quantityAlign{
+    display: grid;
+    /* align-content: center; */
+    justify-items: stretch;
+}
+    
+.deleteIcon:hover{
+    color: rgb(83, 1, 1);
+    cursor: pointer;;
+}
+.deleteIcon{
+    color:rgb(255, 4, 4)
+}
