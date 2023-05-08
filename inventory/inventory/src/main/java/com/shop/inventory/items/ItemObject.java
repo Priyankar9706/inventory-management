@@ -1,5 +1,6 @@
 package com.shop.inventory.items;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,15 +17,18 @@ public class ItemObject {
 	@GeneratedValue
 	private int id;
 	private String item;
-	private int quantity;
-	private int price;
-	private int totalRate;
+	@Column(precision = 2)
+	private double quantity;
+	private double price;
+	private double totalRate;
 	private String category;
+	private int grandTotal;
+	private String unit;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Stores store;
 
-	public ItemObject(int id, String item, int quantity, int price, int totalRate, String category, Stores store) {
+	public ItemObject(int id, String item, double quantity, double price, double totalRate, String category, Stores store,String unit) {
 		super();
 		this.id = id;
 		this.item = item;
@@ -33,6 +37,7 @@ public class ItemObject {
 		this.totalRate = totalRate;
 		this.category = category;
 		this.store = store;
+		this.unit=unit;
 	}
 
 	public int getId() {
@@ -51,27 +56,27 @@ public class ItemObject {
 		this.item = item;
 	}
 
-	public int getQuantity() {
+	public double getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(double quantity) {
 		this.quantity = quantity;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
-	public int getTotalRate() {
+	public double getTotalRate() {
 		return totalRate;
 	}
 
-	public void setTotalRate(int totalRate) {
+	public void setTotalRate(double totalRate) {
 		this.totalRate = totalRate;
 	}
 
@@ -89,6 +94,29 @@ public class ItemObject {
 
 	public void setStore(Stores store) {
 		this.store = store;
+	}
+
+	@Override
+	public String toString() {
+		return "ItemObject [id=" + id + ", item=" + item + ", quantity=" + quantity + ", price=" + price
+				+ ", totalRate=" + totalRate + ", category=" + category + ", grandTotal=" + grandTotal + ", unit="
+				+ unit + ", store=" + store + "]";
+	}
+
+	public int getGrandTotal() {
+		return grandTotal;
+	}
+
+	public void setGrandTotal(int grandTotal) {
+		this.grandTotal = grandTotal;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 	
 	

@@ -4,8 +4,8 @@ public class ItemForm {
 	private int id;
 	private String item;
 	private String category;
-	private int price;
-	private int quantity;
+	private double price;
+	private double quantity;
 	private String unit;
 	
 	ItemForm(){
@@ -14,19 +14,8 @@ public class ItemForm {
 	
 	
 	
-	public int getPrice() {
-		return price;
-	}
-	public void setPrice(int price) {
-		this.price = price;
-	}
-	public int getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-	public ItemForm(int id,String item, String category, int price, int quantity,String unit) {
+	
+	public ItemForm(int id,String item, String category, double price, double quantity,String unit) {
 		super();
 		this.id=id;
 		this.item = item;
@@ -84,6 +73,34 @@ public class ItemForm {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+
+
+
+	public double getPrice() {
+		return price;
+	}
+
+
+
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+
+
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+
+
+
+	public void setQuantity(double quantity) {
+		this.quantity = quantity;
 	}
 	
 	

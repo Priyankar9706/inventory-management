@@ -1,12 +1,14 @@
 package com.shop.inventory.items;
 
+
+import java.io.IOException;
 import java.net.URI;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+//import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
-//import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +18,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.inventory.jpa.CategoriesRepository;
+import com.shop.inventory.jpa.InvoiceRepository;
 import com.shop.inventory.jpa.ItemObjectRepository;
 import com.shop.inventory.jpa.ItemRepository;
 import com.shop.inventory.jpa.StoreRepository;
-
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -31,18 +35,22 @@ public class ItemJpaResource {
 	private StoreRepository storeRepository;
 	private CategoriesRepository categoriesRepository;
 	private ItemObjectRepository itemObjectRepository;
+	private InvoiceRepository invoiceRepository;
+
 	
-	public ItemJpaResource(ItemRepository itemRepository,StoreRepository storeRepository,CategoriesRepository categoriesRepository,ItemObjectRepository itemObjectRepository) {
+	public ItemJpaResource(ItemRepository itemRepository,StoreRepository storeRepository,CategoriesRepository categoriesRepository,ItemObjectRepository itemObjectRepository,InvoiceRepository invoiceRepository) {
 		this.itemRepository=itemRepository;
 		this.categoriesRepository=categoriesRepository;
 		this.storeRepository=storeRepository;
 		this.itemObjectRepository=itemObjectRepository;
+		this.invoiceRepository=invoiceRepository;
+//		this.convertToDatabaseColumn=convertToDatabaseColumn;
 	}
 	
 	@GetMapping("/user/{storename}/inventory")
 	public List<Items> retrieveAllUsers(@PathVariable String storename) {
 //		return itemRepository.findAll();
-		System.out.println(storename+"dddddddd");
+		
 		Stores store= storeRepository.findByStoreName(storename);
 		if(store!=null) {
 			int storeId=store.getStoreId();
@@ -56,40 +64,78 @@ public class ItemJpaResource {
 	}
 	
 	@PutMapping("/user/{username}/invoice")
-	public void updateInventoryAfterInvoice(@PathVariable String username,@Valid @RequestBody List<ItemObject> cartItems){
-		System.out.println("1");
-		cartItems.forEach(item->{
-			System.out.println("2");
+	public void updateInventoryAfterInvoice(@PathVariable String username,@Valid @RequestBody RequestBodyInvoiceGenerator request) throws StreamReadException, DatabindException, IOException{
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		InvoiceHistory invoiceHistory=new InvoiceHistory();
+		
+		String d=objectMapper.writeValueAsString(request.getCartItems());
+		
+		invoiceHistory.setData(d);
+		invoiceHistory.setGrandTotal(request.getGrandTotal());
+		long mills=System.currentTimeMillis();
+		
+		
+		invoiceHistory.setDate(new Date(mills));
+		invoiceHistory.setTime(java.time.LocalTime.now());
+		
+		Stores store= storeRepository.findByStoreName(username);
+		
+		invoiceHistory.setStore(store);
+		invoiceRepository.save(invoiceHistory);
+			
+
+
+		
+			
+
+     
+     
+		request.getCartItems().forEach(item->{
+			
 			Items items=itemRepository.findByItem(item.getItem());
-			if(items.getQuantity()-item.getQuantity()==0) {
-				itemRepository.delete(items);
-			}else {
+//			if(items.getQuantity()-item.getQuantity()==0) {
+//				itemRepository.delete(items);
+//			}else {
 				items.setQuantity(items.getQuantity()-item.getQuantity());
 				itemRepository.save(items);
-			}
-			System.out.println("3 "+ items);
+//			}
+		
 			
 			
 		});
 	}
 	
+	@GetMapping("/user/{storename}/invoice_history")
+	public List<InvoiceHistory>  getInvoiceHistoryList(@PathVariable String storename){
+		Stores store= storeRepository.findByStoreName(storename);
+		int storeId=store.getStoreId();
+		List<InvoiceHistory> list=invoiceRepository.findByStoreStoreId(storeId);
+		
+		
+		return list;
+ 
+		
+		
+		
+	}
 	
 	@PostMapping("/user/{storename}/inventory")
 	public Items createItem(@Valid @RequestBody ItemForm itemForm,@PathVariable String storename) {
 		String category=itemForm.getCategory();
-		//System.out.println("1111"+category);
+		
 		Categories categories=categoriesRepository.findByCategoryName(category);
-		//System.out.println("2222"+categories);
+		
 		int categoryId;
 		
 		if(categories==null) {
-		//	System.out.println("33333");
+		
 			categoriesRepository.save(new Categories(0,category));
 			categoryId=categoriesRepository.findByCategoryName(category).getCategoryId();
 			
 		}else {
 			categoryId=categories.getCategoryId();
-			//System.out.println("44444"+categoryId);
+			
 		}
 		
 		//Stores store= storeRepository.findByStoreName(storename);
@@ -103,7 +149,7 @@ public class ItemJpaResource {
 		items.setStore(new Stores(storeId,storename));
 		items.setUnit(itemForm.getUnit());
 		
-		System.out.println("CONTROLLED "+items);
+
 		itemRepository.save(items);
 		return items;
 		
@@ -113,7 +159,7 @@ public class ItemJpaResource {
 	
 	@PostMapping("/user/{storename}/cart")
 	public ItemObject addItemToCart(@Valid @RequestBody ItemObject itemObject,@PathVariable  String storename) {
-		System.out.println(itemObject);
+		System.out.println(itemObject.getQuantity());
 		int storeId=storeRepository.findByStoreName(storename).getStoreId();
 		itemObject.setStore(new Stores(storeId,storename));
 		itemObjectRepository.save(itemObject);
@@ -123,7 +169,7 @@ public class ItemJpaResource {
 	@GetMapping("/user/{storename}/cart")
 	public List<ItemObject> getCartItem(@PathVariable String storename) {
 		int storeId=storeRepository.findByStoreName(storename).getStoreId();
-		System.out.println(itemObjectRepository.findByStoreStoreId(storeId).toString());
+		
 		return  itemObjectRepository.findByStoreStoreId(storeId);
 		
 	}
@@ -166,6 +212,8 @@ public class ItemJpaResource {
 	}
 
 	
+	
+	
 	@PostMapping("/jpa/items")
 	public ResponseEntity<Items> createItem(@Valid @RequestBody Items item) {
 		
@@ -188,7 +236,7 @@ public class ItemJpaResource {
 	@DeleteMapping("/user/{storename}/inventory")
 	public void deleteCart(@PathVariable String storename) {
 		int storeId=storeRepository.findByStoreName(storename).getStoreId();
-		System.out.println(storeId);
+	
 		 itemObjectRepository.deleteAllByStoreStoreId(storeId);
 		
 	}

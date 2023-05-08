@@ -29,9 +29,9 @@ public class Items {
 	
 	//shopName
 	//private int categoryId; 
-	private int quantity;
+	private double quantity;
 	private String unit;
-	private int  price;
+	private double  price;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Stores store;
@@ -43,7 +43,7 @@ public class Items {
 	
 	
 	public Items(int id, @Size(min = 2, message = "Name should have atleast 2 characters") String item, String storeId,
-			String catgoryId, int quantity, int price,String unit) {
+			String catgoryId, double quantity, double price,String unit) {
 		super();
 		this.id = id;
 		this.item = item;
@@ -74,19 +74,19 @@ public class Items {
 		this.item = item;
 	}
 
-	public int getQuantity() {
+	public double getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(double quantity) {
 		this.quantity = quantity;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
