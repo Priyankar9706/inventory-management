@@ -1,0 +1,14 @@
+.navDashboardHeaderColor{
+    color:gold !important
+}
+.navHeaderColor{
+    color:darksalmon !important
+}
+
+.navDashboardHeaderColor:hover{
+    color:white !important
+}
+a:hover {
+    color:white !important
+
+}

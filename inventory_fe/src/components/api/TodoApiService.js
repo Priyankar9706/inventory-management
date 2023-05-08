@@ -26,4 +26,7 @@ export const deleteCart
 =(username)=>apiClient.delete(`/user/${username}/inventory`)
 
 export const updateInventory
-=(username,cartItems)=>apiClient.put(`/user/${username}/invoice`,cartItems)
+=(username,request)=>apiClient.put(`/user/${username}/invoice`,request)
+
+export const getInvoiceHistoryList
+=(username)=>apiClient.get(`/user/${username}/invoice_history`)

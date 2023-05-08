@@ -24,11 +24,17 @@ export default function InvoiceGenerator() {
   const [totalRate,setTotalRate]=useState(0)
   const [grandTotal,setGrandTotal]=useState(0)
   const [showModal,setShowModal]=useState(false)
-  const[pdfGenerated,setPdfGenerated]=useState(false)
+  const[unit,setUnit]=useState("")
+const[flag,setFlag]=useState(false)
 
-
-  const filterData = datas.map((data) => {
-    return data.category.categoryName;
+  const filterData = 
+  datas.filter((d)=>d.quantity>0)
+  .map((data) => {
+    // if(data.quantity>0){
+    //   
+    // }
+     return data.category.categoryName;
+ 
   });
 
   const uniqueCategories = filterData.filter((v, i, self) => {
@@ -51,6 +57,7 @@ export default function InvoiceGenerator() {
     let temp=0;
     cartItems.map(cartItem=>temp=temp+cartItem.totalRate)
     setGrandTotal(temp)
+    
   },[cartItems])
 
   function refreshInventory() {
@@ -67,14 +74,16 @@ export default function InvoiceGenerator() {
     setItemName(event.target.textContent);
   }
 
-  useEffect(() => {refreshInventory();refreshCart()}, []);
+  useEffect(() => {refreshInventory();refreshCart()}, [flag]);
   useEffect(() => {
     setItemName("");
     setPrice(0)
     setTotalRate(0)
     setQuantity(1)
+    setUnit("")
     setItems(
       datas
+      .filter((d)=>d.quantity>0)
         .filter((data) => data.category.categoryName === category)
         .map((item) => item.item)
     );
@@ -88,6 +97,7 @@ export default function InvoiceGenerator() {
     setPrice(
       datas.filter((data) => data.item === itemName).map((price) => price.price)
     );
+    setUnit(datas.filter((data)=>data.item===itemName).map((unit)=>unit.unit)[0])
     setMaxQuantity(
       datas
         .filter((data) => data.item === itemName)
@@ -114,7 +124,7 @@ export default function InvoiceGenerator() {
 
   function handleChange(event) {
     if(Number(event.target.value)<=maxQuantity){
-      setQuantity(event.target.value);
+      setQuantity((event.target.value));
       
     }else if(Number(event.target.value)>maxQuantity){
       setQuantity(maxQuantity)
@@ -142,7 +152,8 @@ function addItemToCart(){
       category:category,
       price:price[0],
       quantity:quantity,
-      totalRate:totalRate
+      totalRate:totalRate,
+      unit:unit
     })
   }else{
     return
@@ -159,18 +170,16 @@ function deleteItemFromCart(id){
     .catch(error=>console.log(error))
 }
 
-// function generateInvoicePdf(){
-//   setShowModal(true)
-  
-// }
 
 function showModalFunction(){
   setShowModal(true)
 }
 function showModalFunctionAfterGeneration(){
-  // setShowModal(true)
- updateInventory(username,cartItems)
-//  setTimeout()
+  setFlag(!flag)
+  const request={
+    cartItems,grandTotal
+  }
+ updateInventory(username,request)
  deleteCart(username).then(()=>refreshCart())
 
 }
@@ -237,7 +246,7 @@ function deleteAllCart(){
           />
           <input
             type="integer"
-            step="1"
+            step="any"
             min="1"
             max={maxQuantity}
             value={quantity}
@@ -252,9 +261,12 @@ function deleteAllCart(){
             data-field="quantity"
             onClick={increment}
           />
+          <label className=""><strong>{unit}</strong></label>
         </div>
         
         </div>
+     
+
         <div>
         <label className="styleInputBox">Total Rate</label>
         <input
@@ -266,6 +278,8 @@ function deleteAllCart(){
           readonly
         />
       </div>
+      
+     
       <div>
       <button type="button" class="addButton btn btn-success" onClick={addItemToCart}>+Add</button>
       </div>
@@ -295,8 +309,8 @@ function deleteAllCart(){
           <th scope="row">{index+1}</th>
           <td>{cartItem.item}</td>
           <td>{cartItem.category}</td>
-          <td>{cartItem.price}</td>
-          <td>{cartItem.quantity}</td>
+          <td>{cartItem.price}/{cartItem.unit}</td>
+          <td>{cartItem.quantity} {cartItem.unit}</td>
           <td>{cartItem.totalRate}</td>
           <td onClick={()=>deleteItemFromCart(cartItem.id)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" className="deleteIcon">
   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
@@ -320,10 +334,11 @@ function deleteAllCart(){
 </table>
 </div>
       <div>
-      <button className="btn btn-warning mx-3" onClick={showModalFunction}>Clear Cart</button>
-      <PDFDownloadLink document={<ReportTable cartItems={cartItems} grandTotal={grandTotal} />} filename="FORM">
-      <button className="btn btn-success " onClick={showModalFunctionAfterGeneration}>Generate Invoice</button>
-      </PDFDownloadLink>
+      {cartItems.length>0 &&  <button className="btn btn-warning mx-3" onClick={showModalFunction}>Clear Cart</button>}
+      {cartItems.length>0 && <PDFDownloadLink document={<ReportTable cartItems={cartItems} grandTotal={grandTotal} />} filename="FORM">
+      <button className="btn btn-success" onClick={showModalFunctionAfterGeneration}>Generate Invoice</button>
+      </PDFDownloadLink>}
+      
       </div>
 
     {/* <div>

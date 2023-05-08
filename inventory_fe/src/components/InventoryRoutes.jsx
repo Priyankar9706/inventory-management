@@ -2,7 +2,7 @@
 import { BrowserRouter,Routes,Route,Navigate } from 'react-router-dom'
 import  "./Welcome"
 import HeaderComponent from './HeaderComponent'
-
+import headerBg from '../images/header_bg.jpg'
 
 import ErrorComponent from './ErrorComponent'
 import AuthProvider, { useAuth } from './security/AuthContext'
@@ -15,6 +15,8 @@ import "./InventoryRoutes.css"
 import RegisterPage from './loginComponent/RegisterPage'
 import { useState } from 'react'
 import InvoiceGenerator from './InvoiceGenerator'
+import InvoiceHistory from './InvoiceHistory'
+import SalesReport from './SalesReport'
 
 
 
@@ -74,6 +76,16 @@ export default function InventoryRoutes(){
                     </AuthenticatedRoute>
                     }/>
                    
+                    <Route path='/:username/invoice-history' element={
+                            <AuthenticatedRoute>
+                                <InvoiceHistory/>
+                            </AuthenticatedRoute>
+                    }/>
+                     <Route path='/:username/sales-report' element={
+                            <AuthenticatedRoute>
+                                <SalesReport/>
+                            </AuthenticatedRoute>
+                    }/>
 
                      <Route path='/logout' element={<Logout/>}/>
                    

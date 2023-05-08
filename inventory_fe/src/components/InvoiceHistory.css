@@ -1,0 +1,14 @@
+.dateFormat{
+    display: flex;
+
+}
+.spanClass{
+    display: flex;
+    justify-content: space-between;
+}
+.accordianDiv{
+
+    margin: 30px 10px 10px 10px;
+}
+
+  

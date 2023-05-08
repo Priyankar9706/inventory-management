@@ -1,0 +1,20 @@
+.chartContainer{
+    display: flex;
+}
+.dropDownGroup{
+    margin: auto;
+}
+.categoryChartAndDropDown{
+    display: flex;
+    margin: 3%;
+    width:50%;
+}
+.categoryChartDropdown{
+    margin:auto;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+::ng-deep #reactgooglegraph-13{
+    width: 100%;
+}

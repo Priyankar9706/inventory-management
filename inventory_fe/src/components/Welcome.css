@@ -1,6 +1,12 @@
 .dashboardButtons{
-    margin-top: 4%;
+    margin-top: 8%;
 }
 .welcomeDiv{
-    margin-top: 5%;
+
+ position: absolute; 
+
+  left: 0; 
+  height: 87%; 
+  width: 100%;
+ /* width: max-content; */
 }

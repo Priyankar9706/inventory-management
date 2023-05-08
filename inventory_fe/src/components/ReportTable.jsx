@@ -56,8 +56,8 @@ const ReportTable = ({ cartItems, grandTotal }) => {
                  <Text style={styles.row2}>{i+1}</Text>
                  <Text style={styles.row2}>{cartItem.item}</Text>
                  <Text style={styles.row2}>{cartItem.category}</Text>
-                 <Text style={styles.row2}>{cartItem.price}</Text>
-                 <Text style={styles.row2}>{cartItem.quantity}</Text>
+                 <Text style={styles.row2}>{cartItem.price}/{cartItem.unit}</Text>
+                 <Text style={styles.row2}>{cartItem.quantity} {cartItem.unit}</Text>
                  <Text style={styles.row2}>{cartItem.totalRate}</Text>      
         </View>
       ))}

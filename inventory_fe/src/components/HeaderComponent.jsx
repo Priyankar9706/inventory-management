@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "./security/AuthContext";
-
+import headerBg from "../images/bg_3.png"
+import "./HeaderComponent.css"
 export default function HeaderComponent() {
   const authContext = useAuth();
   const isAuthenticated = authContext.isAuthenticated;
@@ -11,11 +12,12 @@ export default function HeaderComponent() {
   }
 
   return (
-    <header className="border-bottom border-light border-5 mb-1 p-2">
-      <div className="container">
+    <div style={{ backgroundImage: `url(${headerBg})` }}>
+    <header className="border-bottom border-light p-2">
+      <div className="container" >
         <div className="row">
           <nav className="navbar navbar-expand-lg">
-            <div className="navbar-brand ms-2 fs-2 fw-bold text-black">
+            <div className="navbar-brand ms-2 fs-2 fw-bold navDashboardHeaderColor">
               Dashboard
             </div>
 
@@ -23,7 +25,7 @@ export default function HeaderComponent() {
               <ul className="navbar-nav">
                 {isAuthenticated && (
                   <li className="nav-item fs-5">
-                    <Link className="nav-link" to={`/welcome/${username}`}>
+                    <Link className="nav-link onhover navHeaderColor" to={`/welcome/${username}`}>
                       Home
                     </Link>
                   </li>
@@ -33,7 +35,7 @@ export default function HeaderComponent() {
               <ul className="navbar-nav">
                 {isAuthenticated && (
                   <li className="nav-item fs-5">
-                    <Link className="nav-link" to={`/${username}/inventory`}>
+                    <Link className="nav-link navHeaderColor"  to={`/${username}/inventory`} >
                       Inventory
                     </Link>
                   </li>
@@ -42,8 +44,17 @@ export default function HeaderComponent() {
               <ul className="navbar-nav">
                 {isAuthenticated && (
                   <li className="nav-item fs-5">
-                    <Link className="nav-link" to={`/${username}/invoice-generator`}>
+                    <Link className="nav-link navHeaderColor" to={`/${username}/invoice-generator`} >
                      Generate Invoice
+                    </Link>
+                  </li>
+                )}
+              </ul>
+              <ul className="navbar-nav">
+                {isAuthenticated && (
+                  <li className="nav-item fs-5">
+                    <Link className="nav-link navHeaderColor" to={`/${username}/invoice-history`}>
+                     Invoice History
                     </Link>
                   </li>
                 )}
@@ -52,7 +63,7 @@ export default function HeaderComponent() {
             <ul className="navbar-nav">
               {!isAuthenticated && (
                 <li className="nav-item fs-5">
-                  <Link className="nav-link" to="/login">
+                  <Link className="nav-link navHeaderColor" to="/login" >
                     Login
                   </Link>
                 </li>
@@ -60,18 +71,19 @@ export default function HeaderComponent() {
 
                 {!isAuthenticated && (
                 <li className="nav-item fs-5">
-                  <Link className="nav-link" to="/register">
+                  <Link className="nav-link navHeaderColor"  to="/register">
                     Register
                   </Link>
                 </li>
               )}
 
               {isAuthenticated && (
-                <li className="nav-item fs-5">
+                <li className="nav-item fs-5" >
                   <Link
-                    className="nav-link"
+                    className="nav-link navHeaderColor"
                     to="/logout"
                     onClick={logoutButton}
+                    
                   >
                     Logout
                   </Link>
@@ -82,5 +94,6 @@ export default function HeaderComponent() {
         </div>
       </div>
     </header>
+    </div>
   );
 }
